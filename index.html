@@ -312,7 +312,7 @@
   <div>
     <h1>GPON ONT Provisioning</h1>
   </div>
-  <span style="margin-left:auto">boni-olt1</span>
+  <span style="margin-left:auto">SME OLTs</span>
 </header>
 
 <main>
@@ -463,7 +463,7 @@
       </div>
       <div class="field">
         <label>Outbound traffic index (DL) *</label>
-            <select id="speeddown"">
+            <select id="speeddown">
               <!-- 👇 placeholder option goes FIRST -->
               <option value="" disabled selected>Upload</option>
 
@@ -605,9 +605,8 @@
     var ok = true;
     var required = [
       ['onu_sn', 'sn'], ['desc', 'desc'], ['fs', 'fs'],
-      ['port', 'port'], ['ontid', 'ontid'],
-      ['svcport1', 'sp1'], ['svcport2', 'sp2'],
-      ['speedup', 'sup'], ['speeddown', 'sdown']
+      ['port', 'port'], ['ontid', 'ontid'], ['smevlan', 'smevlan'],
+      ['svcport1', 'sp1'], ['speedup', 'speedup'], ['speeddown', 'speeddown']
     ];
     required.forEach(function(r) {
       var empty = !v(r[0]);
@@ -623,8 +622,7 @@
     var sn = v('onu_sn'), desc = v('desc'),
         fs = v('fs'), port = v('port'), ontid = v('ontid'),
         lineprof = v('lineprof'), srvprof = v('srvprof'),
-        svcport1 = v('svcport1'), svcport2 = v('svcport2'),
-        smevlan = v('smevlan'), 
+        svcport1 = v('svcport1'), smevlan = v('smevlan'), 
         speedup = v('speedup'), speeddown = v('speeddown'),
         pppoeuser = v('pppoeuser'), pppoepw = v('pppoepw'),
         ip = v('ip'), smeplan = v('smeplan');
@@ -648,7 +646,7 @@
         ' gemport 1 multi-service user-vlan 100 tag-transform translate' +
         ' inbound traffic-table index ' + speedup +
         ' outbound traffic-table index ' + speeddown + '\n' +
-      'service-port ' + svcport2 + ' vlan 320 gpon ' + fsp + ' ont ' + ontid +
+      'service-port ' + svcport1 + ' vlan 320 gpon ' + fsp + ' ont ' + ontid +
         ' gemport 3 multi-service user-vlan 320 tag-transform translate\n' +
       'service-port desc ' + svcport1 + ' description "' + desc + '"\n' +
       'Save';
