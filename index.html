@@ -283,6 +283,9 @@
     align-items: center;
     gap: 5px;
   }
+  .vlan-select {
+  color: grey;
+}
 
   @media (max-width: 600px) {
     .grid2, .grid3, .grid4 { grid-template-columns: 1fr; }
@@ -406,7 +409,7 @@
         <label placeholder="vlan 412">SME Internet Vlan *</label>
             <select id="smevlan">
               <!-- 👇 placeholder option goes FIRST -->
-              <option value="" disabled selected hidden>Choose VLAN</option>
+              <option value="" disabled selected hidden class="vlan-select">Choose VLAN</option>
 
               <!-- real options -->
               <option value="412">Vlan 412 Boni-olt1</option>
