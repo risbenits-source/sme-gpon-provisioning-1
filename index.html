@@ -284,7 +284,11 @@
     gap: 5px;
   }
   .vlan-select {
-  color: grey;
+  color: grey;   /* default (placeholder state) */
+}
+
+.vlan-select:valid {
+  color: black;  /* after user selects a real VLAN */
 }
 
   @media (max-width: 600px) {
@@ -407,9 +411,9 @@
       </div>
        <div class="field">
         <label>SME Internet Vlan *</label>
-            <select id="smevlan">
+            <select id="smevlan" class="vlan-select" required>
               <!-- 👇 placeholder option goes FIRST -->
-              <option value="" disabled selected hidden class="vlan-select">Choose VLAN</option>
+              <option value="" disabled selected>Choose VLAN</option>
 
               <!-- real options -->
               <option value="412">Vlan 412 Boni-olt1</option>
@@ -418,9 +422,9 @@
       </div>
       <div class="field">
         <label>Inbound traffic index (UL) *</label>
-            <select id="inboundtraffic">
+            <select id="inboundtraffic" class="vlan-select" required>
               <!-- 👇 placeholder option goes FIRST -->
-              <option value="" disabled selected hidden class="vlan-select">Choose Ibound</option>
+              <option value="" disabled selected >Download</option>
 
               <!-- real options -->
               <option value="40">biz-20m-traffic-up</option>
@@ -431,7 +435,7 @@
         <label>Outbound traffic index (DL) *</label>
             <select id="outboundtraffic">
               <!-- 👇 placeholder option goes FIRST -->
-              <option value="" disabled selected hidden class="vlan-select">Choose Obound</option>
+              <option value="" disabled selected>Upload</option>
 
               <!-- real options -->
               <option value="39">biz-40m-traffic-down</option>
