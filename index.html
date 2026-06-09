@@ -631,7 +631,7 @@
     var ipCidr = ip ? ip + '/32' : '<IP>/32';
 
     var olt =
-      '### Access boni-olt1 ###\n\n' +
+      '### Access OLT SCRIPT ###\n\n' +
       'config\n' +
       'interface gpon ' + fs + '\n' +
       'ont add ' + port + ' ' + ontid +
@@ -646,13 +646,13 @@
         ' gemport 1 multi-service user-vlan 100 tag-transform translate' +
         ' inbound traffic-table index ' + speedup +
         ' outbound traffic-table index ' + speeddown + '\n' +
-      'service-port ' + svcport1 + ' vlan 320 gpon ' + fsp + ' ont ' + ontid +
+      'service-port ' + (svcport1.trim().slice(0, -1) + '3') + ' vlan 320 gpon ' + fsp + ' ont ' + ontid +
         ' gemport 3 multi-service user-vlan 320 tag-transform translate\n' +
       'service-port desc ' + svcport1 + ' description "' + desc + '"\n' +
       'Save';
 
     var sme =
-      '### Access sme-script ###\n\n' +
+      '### SME SCRIPT ###\n\n' +
       'ssh riseops@10.129.2.20\n' +
       'R1s3Op$$$\n' +
       'riseops@cebu-perf1:~$ /home/riseops/sme_customer_add.py\n' +
