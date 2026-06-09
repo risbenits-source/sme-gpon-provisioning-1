@@ -398,9 +398,17 @@
     </div>
     <div class="grid4" style="margin-bottom:12px">
       <div class="field">
-        <label>Service Port — Data (VLAN 412) *</label>
+        <label>Olt Service Port*</label>
         <input id="svcport1" type="number" placeholder="e.g. 2351" />
         <span class="err-msg" id="err_sp1">Required</span>
+      </div>
+       <div class="field">
+        <label>SME Internet Vlan *</label>
+          <label>Line Profile *</label>
+          <select id="smevlan">
+            <option value="412">Vlan 412 Boni-olt1</option>
+            <option value="417">Vlan 417 cebu-olt1</option>
+          </select>
       </div>
       <div class="field">
         <label>Service Port — Mgmt (VLAN 320) *</label>
