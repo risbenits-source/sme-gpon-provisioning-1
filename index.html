@@ -406,7 +406,7 @@
         <span class="err-msg" id="err_sp1">Required</span>
       </div>
        <div class="field">
-        <label placeholder="vlan 412">SME Internet Vlan *</label>
+        <label>SME Internet Vlan *</label>
             <select id="smevlan">
               <!-- 👇 placeholder option goes FIRST -->
               <option value="" disabled selected hidden class="vlan-select">Choose VLAN</option>
@@ -417,14 +417,26 @@
             </select>
       </div>
       <div class="field">
-        <label>Inbound traffic index (upload) *</label>
-        <input id="speedup" type="number" placeholder="e.g. 320" />
-        <span class="err-msg" id="err_sup">Required</span>
+        <label>Inbound traffic index (UL) *</label>
+            <select id="inboundtraffic">
+              <!-- 👇 placeholder option goes FIRST -->
+              <option value="" disabled selected hidden class="vlan-select">Choose Ibound</option>
+
+              <!-- real options -->
+              <option value="40">biz-20m-traffic-up</option>
+              <option value="42">biz-250m-traffic-up</option>
+            </select>
       </div>
       <div class="field">
-        <label>Outbound traffic index (download) *</label>
-        <input id="speeddown" type="number" placeholder="e.g. 320" />
-        <span class="err-msg" id="err_sdown">Required</span>
+        <label>Outbound traffic index (DL) *</label>
+            <select id="outboundtraffic">
+              <!-- 👇 placeholder option goes FIRST -->
+              <option value="" disabled selected hidden class="vlan-select">Choose Obound</option>
+
+              <!-- real options -->
+              <option value="39">biz-40m-traffic-down</option>
+              <option value="41">biz-20m-traffic-down</option>
+            </select>
       </div>
     </div>
   </div>
