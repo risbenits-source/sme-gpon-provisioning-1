@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPON ONT Provisioning — boni-olt1</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f5f4;
+    --surface: #ffffff;
+    --surface2: #f9f9f8;
+    --border: #e2e0db;
+    --border2: #d0cdc7;
+    --text: #1a1917;
+    --text2: #6b6860;
+    --text3: #9e9b94;
+    --accent: #1a4ed8;
+    --accent-bg: #eff4ff;
+    --accent-text: #1e3a8a;
+    --green: #166534;
+    --green-bg: #f0fdf4;
+    --red: #991b1b;
+    --red-bg: #fef2f2;
+    --mono: 'Courier New', 'Consolas', monospace;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    width: 32px; height: 32px;
+    background: #1a1917;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo svg { width: 18px; height: 18px; }
+
+  header h1 { font-size: 15px; font-weight: 600; }
+  header span { font-size: 13px; color: var(--text2); }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .card-icon {
+    width: 28px; height: 28px;
+    background: var(--bg);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+  .span2 { grid-column: span 2; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+
+  .field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+
+  .field input, .field select {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13.5px;
+    font-family: inherit;
+    transition: border-color .15s, box-shadow .15s;
+    width: 100%;
+  }
+
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(26,78,216,.1);
+  }
+
+  .field input::placeholder { color: var(--text3); }
+
+  .field input.error { border-color: #dc2626; }
+  .err-msg { font-size: 11px; color: #dc2626; display: none; }
+  .err-msg.show { display: block; }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  .btn {
+    height: 38px;
+    padding: 0 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: background .15s, border-color .15s;
+  }
+  .btn:hover { background: var(--bg); }
+  .btn:active { transform: scale(.98); }
+
+  .btn-primary {
+    background: #1a1917;
+    color: #fff;
+    border-color: #1a1917;
+  }
+  .btn-primary:hover { background: #333; border-color: #333; }
+
+  .btn-sm {
+    height: 28px;
+    padding: 0 12px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  /* Output section */
+  .output-wrap { display: none; margin-top: 6px; }
+  .output-wrap.visible { display: block; }
+
+  .success-banner {
+    background: var(--green-bg);
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+    width: fit-content;
+    margin-bottom: 12px;
+  }
+
+  .tab {
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text2);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background .1s, color .1s;
+  }
+  .tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+
+  .out-block {
+    background: #1a1917;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .out-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid #333;
+  }
+
+  .out-label-text {
+    font-size: 12px;
+    color: #9e9b94;
+    font-family: var(--mono);
+  }
+
+  .copy-btn {
+    background: #333;
+    border: 1px solid #444;
+    color: #ccc;
+    border-radius: 5px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .copy-btn:hover { background: #444; }
+  .copy-btn.copied { background: #166534; border-color: #166534; color: #fff; }
+
+  pre {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #e8e5df;
+    padding: 16px 18px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+  }
+
+  .kw { color: #7dd3fc; }   /* commands */
+  .val { color: #86efac; }  /* values */
+  .cm { color: #6b7280; }   /* comments */
+  .sec { color: #fbbf24; }  /* section headers */
+
+  .hint {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  @media (max-width: 600px) {
+    .grid2, .grid3, .grid4 { grid-template-columns: 1fr; }
+    .span2 { grid-column: span 1; }
+    header h1 { font-size: 14px; }
+    pre { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <path d="M8 21h8M12 17v4"/>
+      <path d="M6 8h.01M10 8h.01"/>
+    </svg>
+  </div>
+  <div>
+    <h1>GPON ONT Provisioning</h1>
+  </div>
+  <span style="margin-left:auto">boni-olt1</span>
+</header>
+
+<main>
+
+  <!-- ONT Identity -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📡</div>
+      <span class="card-title">ONT Identity</span>
+    </div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="field">
+        <label>ONU Serial Number *</label>
+        <input id="onu_sn" placeholder="e.g. 48575443XXXXXXXX" />
+        <span class="err-msg" id="err_sn">Required</span>
+      </div>
+      <div class="field span2">
+        <label>Description — Circuit ID, Customer Name, Speed *</label>
+        <input id="desc" placeholder='e.g. SM001386, Gamigo Philippines Incorporated, Mabuhay Tower 2, 200M' />
+        <span class="err-msg" id="err_desc">Required</span>
+      </div>
+    </div>
+    <div class="grid3">
+      <div class="field">
+        <label>Frame / Slot (e.g. 0/1) *</label>
+        <input id="fs" placeholder="0/1" />
+        <span class="err-msg" id="err_fs">Required, format: 0/1</span>
+      </div>
+      <div class="field">
+        <label>Port *</label>
+        <input id="port" type="number" min="0" max="15" placeholder="0" />
+        <span class="err-msg" id="err_port">Required</span>
+      </div>
+      <div class="field">
+        <label>ONT ID *</label>
+        <input id="ontid" type="number" min="0" max="127" placeholder="0" />
+        <span class="err-msg" id="err_ontid">Required</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profiles -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">⚙️</div>
+      <span class="card-title">Profiles</span>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Line Profile *</label>
+        <select id="lineprof">
+          <option value="305">305 — biz-50m-line</option>
+          <option value="310">310 — biz-100m-line</option>
+          <option value="315">315 — biz-150m-line</option>
+          <option value="320">320 — biz-200m-line</option>
+          <option value="325">325 — sme-100m-line</option>
+          <option value="326">326 — sme-200m-line</option>
+          <option value="330">330 — aggregate-sme-200m-line</option>
+          <option value="340">340 — biz-300m-line</option>
+          <option value="350">350 — free-wifi-20m</option>
+          <option value="360">360 — wireless-200m</option>
+          <option value="370">370 — biz-500m-line</option>
+          <option value="376">376 — biz-600m-line</option>
+          <option value="380">380 — aggregate-sme-300m-line</option>
+          <option value="381">381 — aggregate-sme-600m-line</option>
+          <option value="385">385 — biz-400m-line</option>
+          <option value="390">390 — biz-1G-line</option>
+          <option value="391">391 — biz-1500m-line</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Service Profile *</label>
+        <select id="srvprof">
+          <option value="95">95 — aggregate-biz-sme-ont</option>
+          <option value="105" selected>105 — biz-sme-ont</option>
+          <option value="110">110 — biz-ll-ont</option>
+          <option value="120">120 — free-wifi-ont</option>
+          <option value="130">130 — wireless-ont</option>
+          <option value="140">140 — mikrotik</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Ports & Traffic -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🔀</div>
+      <span class="card-title">Service Ports &amp; Traffic</span>
+    </div>
+    <div class="grid4" style="margin-bottom:12px">
+      <div class="field">
+        <label>Service Port — Data (VLAN 412) *</label>
+        <input id="svcport1" type="number" placeholder="e.g. 2351" />
+        <span class="err-msg" id="err_sp1">Required</span>
+      </div>
+      <div class="field">
+        <label>Service Port — Mgmt (VLAN 320) *</label>
+        <input id="svcport2" type="number" placeholder="e.g. 2353" />
+        <span class="err-msg" id="err_sp2">Required</span>
+      </div>
+      <div class="field">
+        <label>Inbound traffic index (upload) *</label>
+        <input id="speedup" type="number" placeholder="e.g. 320" />
+        <span class="err-msg" id="err_sup">Required</span>
+      </div>
+      <div class="field">
+        <label>Outbound traffic index (download) *</label>
+        <input id="speeddown" type="number" placeholder="e.g. 320" />
+        <span class="err-msg" id="err_sdown">Required</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SME PPPoE -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🌐</div>
+      <span class="card-title">SME PPPoE &amp; IP</span>
+    </div>
+    <div class="grid4">
+      <div class="field">
+        <label>SME Plan</label>
+        <select id="smeplan">
+          <option value="a">a — SME20</option>
+          <option value="b">b — SME30</option>
+          <option value="c">c — SME50</option>
+          <option value="d">d — SME100</option>
+          <option value="e">e — SME200</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>PPPoE Username</label>
+        <input id="pppoeuser" placeholder="e.g. customer@sme" />
+      </div>
+      <div class="field">
+        <label>PPPoE Password</label>
+        <input id="pppoepw" placeholder="password" />
+      </div>
+      <div class="field">
+        <label>IP Address (/32)</label>
+        <input id="ip" placeholder="e.g. 10.10.10.1" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="generate()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Generate configs
+    </button>
+    <button class="btn" onclick="clearAll()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Clear all
+    </button>
+  </div>
+
+  <!-- Output -->
+  <div class="output-wrap" id="out-wrap">
+
+    <div style="height:24px"></div>
+
+    <div class="success-banner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Configs generated — copy and paste into your terminal.
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('olt', this)">OLT config</button>
+      <button class="tab" onclick="showTab('sme', this)">SME script</button>
+      <button class="tab" onclick="showTab('all', this)">Combined</button>
+    </div>
+
+    <div id="tab-olt">
+      <div class="out-block">
+        <div class="out-topbar">
+          <span class="out-label-text">boni-olt1 — access commands</span>
+          <button class="copy-btn" id="copy-olt" onclick="copyBlock('pre-olt', 'copy-olt')">Copy</button>
+        </div>
+        <pre id="pre-olt"></pre>
+      </div>
+    </div>
+
+    <div id="tab-sme" style="display:none">
+      <div class="out-block">
+        <div class="out-topbar">
+          <span class="out-label-text">sme-script — cebu-perf1</span>
+          <button class="copy-btn" id="copy-sme" onclick="copyBlock('pre-sme', 'copy-sme')">Copy</button>
+        </div>
+        <pre id="pre-sme"></pre>
+      </div>
+    </div>
+
+    <div id="tab-all" style="display:none">
+      <div class="out-block">
+        <div class="out-topbar">
+          <span class="out-label-text">full provisioning config</span>
+          <button class="copy-btn" id="copy-all" onclick="copyBlock('pre-all', 'copy-all')">Copy</button>
+        </div>
+        <pre id="pre-all"></pre>
+      </div>
+    </div>
+
+    <p class="hint">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      VLAN 412 = SME data &nbsp;|&nbsp; VLAN 320 = management &nbsp;|&nbsp; GEMport 1 = data, GEMport 3 = mgmt
+    </p>
+  </div>
+
+</main>
+
+<script>
+  function v(id) { return document.getElementById(id).value.trim(); }
+
+  function setErr(id, show) {
+    var el = document.getElementById('err_' + id);
+    var inp = document.getElementById(id);
+    if (el) el.classList.toggle('show', show);
+    if (inp) inp.classList.toggle('error', show);
+  }
+
+  function validate() {
+    var ok = true;
+    var required = [
+      ['onu_sn', 'sn'], ['desc', 'desc'], ['fs', 'fs'],
+      ['port', 'port'], ['ontid', 'ontid'],
+      ['svcport1', 'sp1'], ['svcport2', 'sp2'],
+      ['speedup', 'sup'], ['speeddown', 'sdown']
+    ];
+    required.forEach(function(r) {
+      var empty = !v(r[0]);
+      setErr(r[0], empty);
+      if (empty) ok = false;
+    });
+    return ok;
+  }
+
+  function generate() {
+    if (!validate()) return;
+
+    var sn = v('onu_sn'), desc = v('desc'),
+        fs = v('fs'), port = v('port'), ontid = v('ontid'),
+        lineprof = v('lineprof'), srvprof = v('srvprof'),
+        svcport1 = v('svcport1'), svcport2 = v('svcport2'),
+        speedup = v('speedup'), speeddown = v('speeddown'),
+        pppoeuser = v('pppoeuser'), pppoepw = v('pppoepw'),
+        ip = v('ip'), smeplan = v('smeplan');
+
+    var fsp = fs + '/' + port;
+    var ipCidr = ip ? ip + '/32' : '<IP>/32';
+
+    var olt =
+      '### Access boni-olt1 ###\n\n' +
+      'config\n' +
+      'interface gpon ' + fs + '\n' +
+      'ont add ' + port + ' ' + ontid +
+        ' sn-auth ' + sn +
+        ' password-auth r1s30n7 omci' +
+        ' ont-lineprofile-id ' + lineprof +
+        ' ont-srvprofile-id ' + srvprof +
+        ' desc "' + desc + '"\n' +
+      'ont port native-vlan ' + port + ' ' + ontid + ' eth 1 vlan 100 priority 1\n' +
+      'Quit\n' +
+      'service-port ' + svcport1 + ' vlan 412 gpon ' + fsp + ' ont ' + ontid +
+        ' gemport 1 multi-service user-vlan 100 tag-transform translate' +
+        ' inbound traffic-table index ' + speedup +
+        ' outbound traffic-table index ' + speeddown + '\n' +
+      'service-port ' + svcport2 + ' vlan 320 gpon ' + fsp + ' ont ' + ontid +
+        ' gemport 3 multi-service user-vlan 320 tag-transform translate\n' +
+      'service-port desc ' + svcport1 + ' description "' + desc + '"\n' +
+      'Save';
+
+    var sme =
+      '### Access sme-script ###\n\n' +
+      'ssh riseops@10.129.2.20\n' +
+      'R1s3Op$$$\n' +
+      'riseops@cebu-perf1:~$ /home/riseops/sme_customer_add.py\n' +
+      'You are about to add a user to the SME SQL database. Do you wish to continue? (y/n)y\n' +
+      'a. SME20\n' +
+      'b. SME30\n' +
+      'c. SME50\n' +
+      'd. SME100\n' +
+      'e. SME200\n' +
+      'Select which SME plan. (a/b/c/d/e)\n\n' +
+      'Select which SME plan. ' + smeplan + '\n' +
+      'What username would you like to add? ' + (pppoeuser || '<PPPOEUSER>') + '\n' +
+      'What password should this user have? ' + (pppoepw || '<PPPOEPASS>') + '\n' +
+      'What IP address should this user have? ' + ipCidr;
+
+    document.getElementById('pre-olt').textContent = olt;
+    document.getElementById('pre-sme').textContent = sme;
+    document.getElementById('pre-all').textContent = olt + '\n\n' + sme;
+
+    var wrap = document.getElementById('out-wrap');
+    wrap.classList.add('visible');
+    setTimeout(function() {
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+
+  function showTab(t, btn) {
+    document.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    document.getElementById('tab-olt').style.display = t === 'olt' ? 'block' : 'none';
+    document.getElementById('tab-sme').style.display = t === 'sme' ? 'block' : 'none';
+    document.getElementById('tab-all').style.display = t === 'all' ? 'block' : 'none';
+  }
+
+  function copyBlock(preId, btnId) {
+    var text = document.getElementById(preId).textContent;
+    var btn = document.getElementById(btnId);
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1800);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+
+  function clearAll() {
+    document.querySelectorAll('input').forEach(function(i) { i.value = ''; i.classList.remove('error'); });
+    document.querySelectorAll('select').forEach(function(s) { s.selectedIndex = 0; });
+    document.querySelectorAll('.err-msg').forEach(function(e) { e.classList.remove('show'); });
+    document.getElementById('out-wrap').classList.remove('visible');
+  }
+</script>
+</body>
+</html>
