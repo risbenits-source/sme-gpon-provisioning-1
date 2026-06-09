@@ -417,29 +417,77 @@
 
               <!-- real options -->
               <option value="412">Vlan 412 Boni-olt1</option>
-              <option value="417">Vlan 417 cebu-olt1</option>
+              <option value="413">Vlan 413 810b-olt1</option>
+              <option value="414">Vlan 414 den1-olt1</option>
+              <option value="411">Vlan 411 c7bc-olt1</option>
+              <option value="417">Vlan 417 c7bc-olt2</option>
+              <option value="410">Vlan 410 jysq-olt1</option>
+              <option value="413">Vlan 413 baih-olt1</option>
+              <option value="419">Vlan 419 cena-olt1</option>
+              <option value="412">Vlan 412 czt1-olt1</option>
+              <option value="414">Vlan 414 mep1-olt1</option>
+              <option value="415">Vlan 415 mep2-olt1</option>
+              <option value="410">Vlan 410 twof-olt1</option>
+              <option value="412">Vlan 412 damo-olt1</option>
+              <option value="410">Vlan 410 gdv1-olt1</option>
+              <option value="411">Vlan 411 ma88-olt1</option>
             </select>
       </div>
       <div class="field">
         <label>Inbound traffic index (UL) *</label>
-            <select id="inboundtraffic" class="vlan-select" required>
+            <select id="speedup" class="vlan-select" required>
               <!-- 👇 placeholder option goes FIRST -->
               <option value="" disabled selected >Download</option>
 
               <!-- real options -->
-              <option value="40">biz-20m-traffic-up</option>
+              <option value="65">sme-traffic-up</option>
+              <option value="67">sme-200-traffic-up</option>
+              <option value="48">biz-75m-traffic-up</option>
+              <option value="54">biz-60m-traffic-up</option>
+              <option value="85">biz-600m-traffic-up</option>
+              <option value="45">biz-50m-traffic-up</option>
+              <option value="57">biz-500m-traffic-up</option>
+              <option value="92">biz-400m-traffic-up</option>
+              <option value="75">biz-30m-traffic-up</option>
+              <option value="77">biz-300m-traffic-up</option>
               <option value="42">biz-250m-traffic-up</option>
+              <option value="40">biz-20m-traffic-up</option>
+              <option value="81">biz-200m-traffic-up</option>
+              <option value="71">biz-150m-traffic-up</option>
+              <option value="61">biz-125m-traffic-up</option>
+              <option value="50">biz-100m-traffic-up</option>
+              <option value="97">biz-1000m-traffic-up</option>
+              <option value="69">aggregate-sme-traffic-up</option>
+              <option value="73">aggregate-600sme-traffic-up</option>
             </select>
       </div>
       <div class="field">
         <label>Outbound traffic index (DL) *</label>
-            <select id="outboundtraffic">
+            <select id="speeddown"">
               <!-- 👇 placeholder option goes FIRST -->
               <option value="" disabled selected>Upload</option>
 
               <!-- real options -->
+              <option value="66">sme-traffic-down</option>
+              <option value="68">sme-200-traffic-down</option>
+              <option value="49">biz-75m-traffic-down</option>
+              <option value="55">biz-60m-traffic-down</option>
+              <option value="86">biz-600m-traffic-down</option>
+              <option value="46">biz-50m-traffic-down</option>
+              <option value="58">biz-500m-traffic-down</option>
               <option value="39">biz-40m-traffic-down</option>
+              <option value="93">biz-400m-traffic-down</option>
+              <option value="76">biz-30m-traffic-down</option>
+              <option value="78">biz-300m-traffic-down</option>
+              <option value="43">biz-250m-traffic-down</option>
               <option value="41">biz-20m-traffic-down</option>
+              <option value="82">biz-200m-traffic-down</option>
+              <option value="72">biz-150m-traffic-down</option>
+              <option value="62">biz-125m-traffic-down</option>
+              <option value="51">biz-100m-traffic-down</option>
+              <option value="98">biz-1000m-traffic-down</option>
+              <option value="70">aggregate-sme-traffic-down</option>
+              <option value="74">aggregate-600sme-traffic-down</option>
             </select>
       </div>
     </div>
@@ -576,6 +624,7 @@
         fs = v('fs'), port = v('port'), ontid = v('ontid'),
         lineprof = v('lineprof'), srvprof = v('srvprof'),
         svcport1 = v('svcport1'), svcport2 = v('svcport2'),
+        smevlan = v('smevlan'), 
         speedup = v('speedup'), speeddown = v('speeddown'),
         pppoeuser = v('pppoeuser'), pppoepw = v('pppoepw'),
         ip = v('ip'), smeplan = v('smeplan');
@@ -595,7 +644,7 @@
         ' desc "' + desc + '"\n' +
       'ont port native-vlan ' + port + ' ' + ontid + ' eth 1 vlan 100 priority 1\n' +
       'Quit\n' +
-      'service-port ' + svcport1 + ' vlan 412 gpon ' + fsp + ' ont ' + ontid +
+      'service-port ' + svcport1 + ' vlan ' + smevlan + ' gpon ' + fsp + ' ont ' + ontid +
         ' gemport 1 multi-service user-vlan 100 tag-transform translate' +
         ' inbound traffic-table index ' + speedup +
         ' outbound traffic-table index ' + speeddown + '\n' +
