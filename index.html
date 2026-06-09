@@ -404,10 +404,14 @@
       </div>
        <div class="field">
         <label placeholder="vlan 412">SME Internet Vlan *</label>
-          <select id="smevlan">
-            <option value="412">Vlan 412 Boni-olt1</option>
-            <option value="417">Vlan 417 cebu-olt1</option>
-          </select>
+            <select id="smevlan">
+              <!-- 👇 placeholder option goes FIRST -->
+              <option value="" disabled selected hidden>Choose VLAN</option>
+
+              <!-- real options -->
+              <option value="412">Vlan 412 Boni-olt1</option>
+              <option value="417">Vlan 417 cebu-olt1</option>
+            </select>
       </div>
       <div class="field">
         <label>Inbound traffic index (upload) *</label>
