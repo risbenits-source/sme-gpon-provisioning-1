@@ -434,62 +434,14 @@
             </select>
       </div>
       <div class="field">
-        <label>Inbound traffic index (UL) *</label>
-            <select id="speedup" class="vlan-select" required>
-              <!-- 👇 placeholder option goes FIRST -->
-              <option value="" disabled selected >Download</option>
-
-              <!-- real options -->
-              <option value="65">sme-traffic-up</option>
-              <option value="67">sme-200-traffic-up</option>
-              <option value="48">biz-75m-traffic-up</option>
-              <option value="54">biz-60m-traffic-up</option>
-              <option value="85">biz-600m-traffic-up</option>
-              <option value="45">biz-50m-traffic-up</option>
-              <option value="57">biz-500m-traffic-up</option>
-              <option value="92">biz-400m-traffic-up</option>
-              <option value="75">biz-30m-traffic-up</option>
-              <option value="77">biz-300m-traffic-up</option>
-              <option value="42">biz-250m-traffic-up</option>
-              <option value="40">biz-20m-traffic-up</option>
-              <option value="81">biz-200m-traffic-up</option>
-              <option value="71">biz-150m-traffic-up</option>
-              <option value="61">biz-125m-traffic-up</option>
-              <option value="50">biz-100m-traffic-up</option>
-              <option value="97">biz-1000m-traffic-up</option>
-              <option value="69">aggregate-sme-traffic-up</option>
-              <option value="73">aggregate-600sme-traffic-up</option>
-            </select>
+        <label>Port *</label>
+        <input id="speedup" type="number" min="0" max="15" placeholder="0" />
+        <span class="err-msg" id="err_port">Required</span>
       </div>
       <div class="field">
-        <label>Outbound traffic index (DL) *</label>
-            <select id="speeddown">
-              <!-- 👇 placeholder option goes FIRST -->
-              <option value="" disabled selected>Upload</option>
-
-              <!-- real options -->
-              <option value="66">sme-traffic-down</option>
-              <option value="68">sme-200-traffic-down</option>
-              <option value="49">biz-75m-traffic-down</option>
-              <option value="55">biz-60m-traffic-down</option>
-              <option value="86">biz-600m-traffic-down</option>
-              <option value="46">biz-50m-traffic-down</option>
-              <option value="58">biz-500m-traffic-down</option>
-              <option value="39">biz-40m-traffic-down</option>
-              <option value="93">biz-400m-traffic-down</option>
-              <option value="76">biz-30m-traffic-down</option>
-              <option value="78">biz-300m-traffic-down</option>
-              <option value="43">biz-250m-traffic-down</option>
-              <option value="41">biz-20m-traffic-down</option>
-              <option value="82">biz-200m-traffic-down</option>
-              <option value="72">biz-150m-traffic-down</option>
-              <option value="62">biz-125m-traffic-down</option>
-              <option value="51">biz-100m-traffic-down</option>
-              <option value="98">biz-1000m-traffic-down</option>
-              <option value="70">aggregate-sme-traffic-down</option>
-              <option value="74">aggregate-600sme-traffic-down</option>
-            </select>
-      </div>
+        <label>Port *</label>
+        <input id="speeddown" type="number" min="0" max="15" placeholder="0" />
+        <span class="err-msg" id="err_port">Required</span>
     </div>
   </div>
 
